@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { Colors, BorderRadius } from '../constants/theme';
+import { Colors } from '../constants/colors';
+import { BorderRadius } from '../constants/theme';
 
 interface ResourceBarProps {
   percent: number;
