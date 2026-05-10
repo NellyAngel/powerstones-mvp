@@ -106,6 +106,36 @@ export default function LoginScreen() {
               <Text style={styles.linkTextBold}>Зарегистрироваться</Text>
             </Text>
           </TouchableOpacity>
+
+          <View style={styles.quickLoginDivider}>
+            <View style={styles.dividerLine} />
+            <Text style={styles.dividerText}>Быстрый вход</Text>
+            <View style={styles.dividerLine} />
+          </View>
+
+          <TouchableOpacity
+            style={styles.quickButton}
+            onPress={() => {
+              setEmail('boss@test.com');
+              setPassword('test123456');
+              setTimeout(() => handleLogin(), 100);
+            }}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.quickButtonText}>👑 Войти как Босс</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.quickButton}
+            onPress={() => {
+              setEmail('employee@test.com');
+              setPassword('test123456');
+              setTimeout(() => handleLogin(), 100);
+            }}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.quickButtonText}>👤 Войти как Сотрудник</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </KeyboardAvoidingView>
@@ -189,5 +219,35 @@ const styles = StyleSheet.create({
   linkTextBold: {
     color: Colors.primary,
     fontWeight: '600',
+  },
+  quickLoginDivider: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: Spacing.xxl,
+    marginBottom: Spacing.lg,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: Colors.border,
+  },
+  dividerText: {
+    marginHorizontal: Spacing.md,
+    fontSize: 13,
+    color: Colors.textSecondary,
+  },
+  quickButton: {
+    backgroundColor: Colors.cardBackground,
+    borderRadius: BorderRadius.md,
+    padding: Spacing.lg,
+    alignItems: 'center',
+    marginBottom: Spacing.sm,
+    borderWidth: 1,
+    borderColor: Colors.border,
+  },
+  quickButtonText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: Colors.textPrimary,
   },
 });
