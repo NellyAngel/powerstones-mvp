@@ -1,10 +1,41 @@
 import { createClient } from '@supabase/supabase-js';
 
-// ⚠️ Замените на свои значения из Supabase Dashboard → Settings → API
-const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL || 'https://your-project.supabase.co';
-const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || 'your-anon-key';
+// ============================================================
+// PowerStones — клиент Supabase
+//
+// В режиме разработки использует локальный прокси,
+// который решает проблему CORS (веб-версия на localhost)
+//
+// Прокси: http://localhost:3001
+// Supabase: https://gjirslmhrlaqlsgbxsjo.supabase.co
+// ============================================================
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Оригинальный URL Supabase (используется в продакшене / на устройстве)
+const ORIGINAL_SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL || 'https://gjirslmhrlaqlsgbxsjo.supabase.co';
+
+// Анонимный ключ Supabase
+const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdqaXJzbG1ocmxhcWxzZ2J4c2pvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDczNzY3NTgsImV4cCI6MjA2Mjk1Mjc1OH0.drL5k1k4TLd9C-V0NK3l3SvVdkFnGEKm44DD9lQYhAc';
+
+// Определяем, используем ли прокси (веб-версия на localhost)
+const isWebDev = typeof window !== 'undefined' &&
+  (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+
+// URL для клиента Supabase:
+// - В веб-разработке → локальный прокси (обходит CORS)
+// - На устройстве / в продакшене → напрямую в Supabase
+const supabaseUrl = isWebDev
+  ? `http://localhost:${process.env.EXPO_PUBLIC_PROXY_PORT || '3001'}`
+  : ORIGINAL_SUPABASE_URL;
+
+console.log(`🔮 Supabase client: ${isWebDev ? '🔄 через прокси' : '➡️ напрямую'} (${supabaseUrl})`);
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    autoRefreshToken: true,
+    persistSession: true,
+    detectSessionInUrl: false,
+  },
+});
 
 // Типы для таблиц БД
 export type Profile = {
