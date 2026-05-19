@@ -1,12 +1,29 @@
 import { createClient } from '@supabase/supabase-js';
 
-// ⚠️ Замените на свои значения из Supabase Dashboard → Settings → API
 const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL || 'https://your-project.supabase.co';
 const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || 'your-anon-key';
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Определяем, используем ли прокси (веб-версия на localhost)
+const isWebDev = typeof window !== 'undefined' &&
+  (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
 
-// Типы для таблиц БД
+// URL для клиента Supabase:
+// - В веб-разработке → локальный прокси (обходит CORS)
+// - На устройстве / в продакшене → напрямую в Supabase
+const apiUrl = isWebDev
+  ? `http://localhost:${process.env.EXPO_PUBLIC_PROXY_PORT || '3001'}`
+  : supabaseUrl;
+
+console.log(`🔮 Supabase client: ${isWebDev ? '🔄 через прокси' : '➡️ напрямую'} (${apiUrl})`);
+
+export const supabase = createClient(apiUrl, supabaseAnonKey, {
+  auth: {
+    autoRefreshToken: true,
+    persistSession: true,
+    detectSessionInUrl: false,
+  },
+});
+
 export type Profile = {
   id: string;
   email: string;
@@ -58,7 +75,6 @@ export type Team = {
   member_id: string;
 };
 
-// Типы для Supabase запросов
 export type Tables = {
   profiles: Profile;
   daily_assessments: DailyAssessment;
