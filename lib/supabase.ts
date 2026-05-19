@@ -1,20 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 
-// ============================================================
-// PowerStones — клиент Supabase
-//
-// В режиме разработки использует локальный прокси,
-// который решает проблему CORS (веб-версия на localhost)
-//
-// Прокси: http://localhost:3001
-// Supabase: https://gjirslmhrlaqlsgbxsjo.supabase.co
-// ============================================================
-
-// Оригинальный URL Supabase (используется в продакшене / на устройстве)
-const ORIGINAL_SUPABASE_URL = process.env.EXPO_PUBLIC_SUPABASE_URL || 'https://gjirslmhrlaqlsgbxsjo.supabase.co';
-
-// Анонимный ключ Supabase
-const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdqaXJzbG1ocmxhcWxzZ2J4c2pvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDczNzY3NTgsImV4cCI6MjA2Mjk1Mjc1OH0.drL5k1k4TLd9C-V0NK3l3SvVdkFnGEKm44DD9lQYhAc';
+const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL || 'https://your-project.supabase.co';
+const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || 'your-anon-key';
 
 // Определяем, используем ли прокси (веб-версия на localhost)
 const isWebDev = typeof window !== 'undefined' &&
@@ -23,13 +10,13 @@ const isWebDev = typeof window !== 'undefined' &&
 // URL для клиента Supabase:
 // - В веб-разработке → локальный прокси (обходит CORS)
 // - На устройстве / в продакшене → напрямую в Supabase
-const supabaseUrl = isWebDev
+const apiUrl = isWebDev
   ? `http://localhost:${process.env.EXPO_PUBLIC_PROXY_PORT || '3001'}`
-  : ORIGINAL_SUPABASE_URL;
+  : supabaseUrl;
 
-console.log(`🔮 Supabase client: ${isWebDev ? '🔄 через прокси' : '➡️ напрямую'} (${supabaseUrl})`);
+console.log(`🔮 Supabase client: ${isWebDev ? '🔄 через прокси' : '➡️ напрямую'} (${apiUrl})`);
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+export const supabase = createClient(apiUrl, supabaseAnonKey, {
   auth: {
     autoRefreshToken: true,
     persistSession: true,
@@ -37,7 +24,6 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   },
 });
 
-// Типы для таблиц БД
 export type Profile = {
   id: string;
   email: string;
@@ -89,7 +75,6 @@ export type Team = {
   member_id: string;
 };
 
-// Типы для Supabase запросов
 export type Tables = {
   profiles: Profile;
   daily_assessments: DailyAssessment;
